@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader_animation from './Loader_animation';
 import { FaCartPlus } from 'react-icons/fa';
+import Loading from '../Components/Loading';
 
 const HairProducts = () => {
     const [server, setServer] = useState([]);
@@ -110,37 +111,39 @@ const HairProducts = () => {
                             <option value="discountDesc">Discount(High To Low)</option>
                         </select>
                     </div>
-                    <div className="fetchdata">
-                        <div className="row justify-content-evenly">
-                            {loading ? <Loader_animation /> : server.map((el) => {
-                                const discountPercentage = Math.round(((el.sprice - el.price) / el.sprice) * 100);
-                                return (
-                                    <div key={el.id} className='col-4'>
-                                        <div className="d-flex justify-content-center">
-                                            <div className="img" style={{ width: "300px", height: "300px", backgroundImage: `url(${el.img})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-                                                {discountPercentage > 0 && discountPercentage < 100 ? <span className=''>{discountPercentage}% OFF</span> : ""}
+                    {loading ? <Loading /> : <div>
+                        <div className="fetchdata">
+                            <div className="row justify-content-evenly">
+                                { server.map((el) => {
+                                    const discountPercentage = Math.round(((el.sprice - el.price) / el.sprice) * 100);
+                                    return (
+                                        <div key={el.id} className='col-4'>
+                                            <div className="d-flex justify-content-center">
+                                                <div className="img" style={{ width: "300px", height: "300px", backgroundImage: `url(${el.img})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+                                                    {discountPercentage > 0 && discountPercentage < 100 ? <span className=''>{discountPercentage}% OFF</span> : ""}
+                                                </div>
+                                                <div className="img2">
+                                                    <img src={el.himg} alt={el.heading} />
+                                                </div>
                                             </div>
-                                            <div className="img2">
-                                                <img src={el.himg} alt={el.heading} />
-                                            </div>
+                                            <Link>
+                                                <h2>{el.heading}</h2>
+                                                <span>
+                                                    <span className='text-danger mx-2'>${el.price}</span>
+                                                    {el.sprice && el.sprice !== el.price && <s>${el.sprice}</s>}
+                                                </span>
+                                            </Link>
+                                            <button className='mt-1 d-flex justify-content-center gap-5 align-items-center' onClick={() => handleCart(el)}>Add To Cart   <FaCartPlus /></button>
                                         </div>
-                                        <Link>
-                                            <h2>{el.heading}</h2>
-                                            <span>
-                                                <span className='text-danger mx-2'>${el.price}</span>
-                                                {el.sprice && el.sprice !== el.price && <s>${el.sprice}</s>}
-                                            </span>
-                                        </Link>
-                                        <button className='mt-1 d-flex justify-content-center gap-5 align-items-center' onClick={() => handleCart(el)}>Add To Cart   <FaCartPlus /></button>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                    <div className="pagination d-flex justify-content-center gap-5 m-5">
-                        <button onClick={() => setpage(page - 1)} disabled={page == 1}><GrFormPrevious /></button>
-                        <button onClick={() => setpage(page + 1)} disabled={page == 8}><GrFormNext /></button>
-                    </div>
+                        <div className="pagination d-flex justify-content-center gap-5 m-5">
+                            <button onClick={() => setpage(page - 1)} disabled={page == 1}><GrFormPrevious /></button>
+                            <button onClick={() => setpage(page + 1)} disabled={page == 8}><GrFormNext /></button>
+                        </div>
+                    </div>}
                 </div>
                 <Footer />
             </div>
